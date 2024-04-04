@@ -1,0 +1,7 @@
+{
+    "clangd.arguments": [
+    "--compile-commands-dir=${workspaceFolder}/",
+    "--completion-style=detailed",
+    "--query-driver=**"
+  ]
+}
