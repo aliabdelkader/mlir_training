@@ -10,7 +10,8 @@ filegroup(
         "@llvm-project//llvm:not",
         "@llvm-project//mlir:mlir-cpu-runner",
         "@llvm-project//mlir:mlir-opt",
-        "@mlir_training_pip_deps_lit//:pkg"
+        "@mlir_training_pip_deps_lit//:pkg",
+        "//tools:mlir-training-opt"
     ],
 )
 

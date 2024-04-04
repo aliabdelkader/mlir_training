@@ -9,15 +9,16 @@ config.suffixes = [".mlir"]
 
 import subprocess
 
-print(subprocess.run(["pwd",]).stdout)
-print(subprocess.run(["echo", os.environ["RUNFILES_DIR"]]).stdout)
-print(subprocess.run(["ls", "-l", os.environ["RUNFILES_DIR"]]).stdout)
-print(subprocess.run([ "env", ]).stdout)
+# print(subprocess.run(["pwd",]).stdout)
+# print(subprocess.run(["echo", os.environ["RUNFILES_DIR"]]).stdout)
+# print(subprocess.run(["ls", "-l", os.environ["RUNFILES_DIR"]]).stdout)
+# print(subprocess.run([ "env", ]).stdout)
 
 runfiles_dir = Path(os.environ["RUNFILES_DIR"])
 tool_relpaths = [
     "llvm-project/mlir",
-    "llvm-project/llvm"
+    "llvm-project/llvm",
+    "mlir_training/tools",
 ]
 
 config.environment["PATH"] = (
@@ -28,3 +29,9 @@ config.environment["PATH"] = (
     + os.environ["PATH"]
 )
 
+
+print(subprocess.run(["echo", "love is here"]).stdout)
+
+print(subprocess.run(["which", "mlir-training-opt"]).stdout)
+
+print(config.environment["PATH"])
