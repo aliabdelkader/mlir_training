@@ -28,10 +28,3 @@ config.environment["PATH"] = (
     + ":"
     + os.environ["PATH"]
 )
-
-
-print(subprocess.run(["echo", "love is here"]).stdout)
-
-print(subprocess.run(["which", "mlir-training-opt"]).stdout)
-
-print(config.environment["PATH"])
