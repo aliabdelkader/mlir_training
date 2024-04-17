@@ -15,10 +15,10 @@ td_library(
         "@heir//include",
     ],
     deps = [
-        # base mlir target for defining operation and dialects in tablegen
-        "@llvm-project//mlir:OpBaseTdFiles",
         "@llvm-project//mlir:BuiltinDialectTdFiles",
-        "@llvm-project//mlir:SideEffectInterfacesTdFiles"
+        "@llvm-project//mlir:InferTypeOpInterfaceTdFiles",
+        "@llvm-project//mlir:OpBaseTdFiles",
+        "@llvm-project//mlir:SideEffectInterfacesTdFiles",
     ]
 )
 
@@ -92,7 +92,8 @@ cc_library(
     hdrs = [
         "PolyDialect.hpp",
         "PolyTypes.hpp",
-        "PolyOps.hpp"
+        "PolyOps.hpp",
+        "PolyTraits.hpp",
     ],
     deps = [
         ":dialect_inc_gen",
@@ -101,5 +102,6 @@ cc_library(
         "@llvm-project//mlir:IR",
         "@llvm-project//mlir:Support",
         "@llvm-project//mlir:Dialect",
+        "@llvm-project//mlir:InferTypeOpInterface",
     ],
 )

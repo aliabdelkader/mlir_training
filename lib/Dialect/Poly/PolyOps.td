@@ -6,14 +6,20 @@ include "PolyTypes.td"
 include "mlir/IR/BuiltinAttributes.td"
 include "mlir/IR/OpBase.td"
 include "mlir/Interfaces/SideEffectInterfaces.td"
+include "mlir/Interfaces/InferTypeOpInterface.td"
 
 // Type constraint for binops arguments: polys, vectors of polys or tensors of polys
 def PolyOrContainer : TypeOrContainer<PolynomialType, "poly-or-container">;
 
-class Poly_BinOp<string mnemmonic> : Op<Poly_Dialect, mnemmonic, [Pure, ElementwiseMappable, SameOperandsAndResultElementType]> {
+// Inject verification that all integer-like arguments are 32-bits
+def Has32BitArguments : NativeOpTrait<"Has32BitArguments"> {
+  let cppNamespace = "::mlir::training::poly";
+}
+
+class Poly_BinOp<string mnemmonic> : Op<Poly_Dialect, mnemmonic, [Pure, ElementwiseMappable, SameOperandsAndResultType]> {
     let arguments = (ins PolyOrContainer:$lhs, PolyOrContainer:$rhs);
     let results = (outs PolyOrContainer:$output);
-    let assemblyFormat = "$lhs `,` $rhs attr-dict `:` `(` type($lhs) `,` type($rhs) `)` `->` type($output)";
+    let assemblyFormat = "$lhs `,` $rhs attr-dict `:` qualified(type($output))";
     let hasFolder = 1;
 }
 
@@ -33,22 +39,23 @@ def Poly_FromTensorOp : Op<Poly_Dialect, "from_tensor", [Pure]> {
     let summary = "create a polynomial from int coefficents in a tensor";
     let arguments = (ins TensorOf<[AnyInteger]>:$input);
     let results = (outs PolynomialType:$output);
-    let assemblyFormat = "$input attr-dict `:` type($input) `->` type($output)";
+    let assemblyFormat = "$input attr-dict `:` type($input) `->` qualified(type($output))";
     let hasFolder = 1;
 }
 
-def Poly_EvalOp : Op<Poly_Dialect, "eval"> {
+def Poly_EvalOp : Op<Poly_Dialect, "eval", [AllTypesMatch<["point", "output"]>, Has32BitArguments]> {
     let summary = "eval a polynomial given input value";
     let arguments = (ins PolynomialType:$input, AnyInteger:$point);
     let results = (outs AnyInteger:$output);
-    let assemblyFormat = "$input `,` $point attr-dict `:` `(` type($input) `,` type($point) `)` `->` type($output)";
+    let assemblyFormat = "$input `,` $point attr-dict `:` `(` qualified(type($input)) `,` type($point) `)` `->` type($output)";
+    let hasVerifier = 1;
 }
 
 def Poly_ConstantOp : Op<Poly_Dialect, "constant", [Pure, ConstantLike]> {
     let summary = "Define a constant poly via an attribute.";
     let arguments = (ins AnyIntElementsAttr:$coefficients);
     let results = (outs PolynomialType:$output);
-    let assemblyFormat = "$coefficients attr-dict `:` type($output)";
+    let assemblyFormat = "$coefficients attr-dict `:` qualified(type($output))";
     let hasFolder = 1;
 }
 #endif // LIB_DIALECT_POLY_POLYOPS_TD_
