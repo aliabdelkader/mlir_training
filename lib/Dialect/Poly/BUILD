@@ -10,9 +10,7 @@ td_library(
         "PolyDialect.td",
         "PolyTypes.td",
         "PolyOps.td",
-    ],
-    includes = [
-        "@heir//include",
+        "PolyPatterns.td",
     ],
     deps = [
         "@llvm-project//mlir:BuiltinDialectTdFiles",
@@ -83,6 +81,23 @@ gentbl_cc_library(
 
 )
 
+gentbl_cc_library(
+    name = "canonicalize_inc_gen",
+    tbl_outs = [
+        (
+            ["-gen-rewriters"],
+            "PolyCanonicalize.cpp.inc",
+        ),
+    ],
+    tblgen = "@llvm-project//mlir:mlir-tblgen",
+    td_file = "PolyPatterns.td",
+    deps = [
+        ":td_files",
+        ":types_inc_gen",
+        "@llvm-project//mlir:ComplexOpsTdFiles",
+    ],
+)
+
 cc_library(
     name = "Poly",
     srcs = [
@@ -96,6 +111,7 @@ cc_library(
         "PolyTraits.hpp",
     ],
     deps = [
+        ":canonicalize_inc_gen",
         ":dialect_inc_gen",
         ":types_inc_gen",
         ":ops_inc_gen",
@@ -103,5 +119,6 @@ cc_library(
         "@llvm-project//mlir:Support",
         "@llvm-project//mlir:Dialect",
         "@llvm-project//mlir:InferTypeOpInterface",
+        "@llvm-project//mlir:ComplexDialect",
     ],
 )

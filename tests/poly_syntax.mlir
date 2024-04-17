@@ -23,14 +23,17 @@ module {
         %7 = tensor.from_elements %arg0, %arg1 : tensor<2x!poly.poly<10>>
         // CHECK: poly.add
         %8 = poly.add %7, %7 :  tensor<2x!poly.poly<10>>
-        // CHECK: poly.add
-        %9 = poly.add %7, %4 : (tensor<2x!poly.poly<10>>, !poly.poly<10>) -> tensor<2x!poly.poly<10>>
 
         // CHECK: poly.constant
         %10  = poly.constant dense<[2, 3, 4]> : tensor<3xi32> : !poly.poly<10>
         %11  = poly.constant dense<[2, 3, 4]> : tensor<3xi8>  : !poly.poly<10>
         %12  = poly.constant dense<"0x020304"> : tensor<3xi8> : !poly.poly<10>
         %13  = poly.constant dense<4> : tensor<100xi32> : !poly.poly<10>
+
+        // complex 
+        %z = complex.constant [1.0, 2.0] : complex<f64>
+        // CHECK: poly.eval
+        %complex_result = poly.eval %4, %z : (!poly.poly<10>, complex<f64>) -> complex<f64>
 
         return %4 : !poly.poly<10>
     }

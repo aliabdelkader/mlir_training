@@ -1,6 +1,10 @@
 #include "lib/Dialect/Poly/PolyOps.hpp"
 #include "mlir/Dialect/CommonFolders.h"
 #include "llvm/Support/Debug.h"
+#include "mlir/Dialect/Complex/IR/Complex.h"
+#include "mlir/IR/PatternMatch.h"
+// Required after PatternMatch.h
+#include "lib/Dialect/Poly/PolyCanonicalize.cpp.inc"
 
 namespace mlir {
 namespace training {
@@ -25,8 +29,8 @@ OpFoldResult SubOp::fold(SubOp::FoldAdaptor adaptor) {
 }
 
 OpFoldResult MulOp::fold(MulOp::FoldAdaptor adaptor) {
-    auto lhs = dyn_cast<DenseIntElementsAttr>(adaptor.getOperands()[0]);
-    auto rhs = dyn_cast<DenseIntElementsAttr>(adaptor.getOperands()[1]);
+    auto lhs = dyn_cast_or_null<DenseIntElementsAttr>(adaptor.getOperands()[0]);
+    auto rhs = dyn_cast_or_null<DenseIntElementsAttr>(adaptor.getOperands()[1]);
 
     if (!lhs || !rhs) return nullptr;
 
@@ -60,7 +64,28 @@ OpFoldResult MulOp::fold(MulOp::FoldAdaptor adaptor) {
 }
 
 OpFoldResult FromTensorOp::fold(FromTensorOp::FoldAdaptor adaptor) {
-    return dyn_cast<DenseIntElementsAttr>(adaptor.getInput());
+    return dyn_cast_or_null<DenseIntElementsAttr>(adaptor.getInput());
+}
+
+LogicalResult EvalOp::verify() {
+    auto pointTy = getPoint().getType();
+    bool isSignlessInteger = pointTy.isSignlessInteger(32);
+    auto complexPt = llvm::dyn_cast<ComplexType>(pointTy);
+    return isSignlessInteger || complexPt ? success() : emitOpError(
+                                              "argument point must be a 32-bit "
+                                              "integer, or a complex number");
+}
+
+void AddOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &result, ::mlir::MLIRContext *context) {}
+
+void SubOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &result, ::mlir::MLIRContext *context) {
+    result.add<DifferenceOfSquares>(context);
+}
+
+void MulOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &result, ::mlir::MLIRContext *context) {}
+
+void EvalOp::getCanonicalizationPatterns(::mlir::RewritePatternSet &result, ::mlir::MLIRContext *context) {
+    result.add<LiftConjThroughEval>(context);
 }
 
 } // namespace poly

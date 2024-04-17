@@ -4,8 +4,8 @@
 #include "mlir/include/mlir/IR/OpDefinition.h"
 
 namespace mlir::training::poly {
-    template<typename ConcreteType>
-    class Has32BitArguments : public OpTraitBase<ConcreteType, Has32BitArguments> {
+    template <typename ConcreteType>
+    class Has32BitArguments : public OpTrait::TraitBase<ConcreteType, Has32BitArguments> {
         public:
             static LogicalResult verifyTrait(Operation *op) {
                 for ( auto type : op->getOperandTypes() ) {

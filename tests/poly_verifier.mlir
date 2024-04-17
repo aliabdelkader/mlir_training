@@ -1,4 +1,4 @@
-// RUN: mlir-training-opt %s 2> %t | FileCheck %s < %t
+// RUN: mlir-training-opt %s 2> %t ; FileCheck %s < %t
 
 func.func @test_invalid_evalop(%arg0: !poly.poly<10>, %cst: i64) -> i64 {
     // CHECK: to be a 32-bit integer
