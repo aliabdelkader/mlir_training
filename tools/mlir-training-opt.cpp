@@ -1,3 +1,4 @@
+#include "lib/Conversion/PolyToStandard/PolyToStandard.hpp"
 #include "lib/Transform/Affine/Passes.h"
 #include "lib/Transform/Arith/Passes.h"
 #include "lib/Dialect/Poly/PolyDialect.hpp"
@@ -15,6 +16,7 @@ int main(int argc, char **argv) {
     // mlir::PassRegistration<mlir::training::AffineFullUnroll>();
     // mlir::PassRegistration<mlir::training::AffineFullUnrollPassAsPatternRewrite>();
     // mlir::PassRegistration<mlir::training::MulToAddPass>();
+    mlir::training::poly::registerPolyToStandardPasses();
     mlir::registerAllPasses();
     return mlir::asMainReturnCode(
         mlir::MlirOptMain(argc, argv, "mlir training Pass Driver", registry)

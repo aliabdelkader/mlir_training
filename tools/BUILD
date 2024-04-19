@@ -11,6 +11,7 @@ cc_binary(
     srcs = ["mlir-training-opt.cpp"],
     includes = ["include"],
     deps = [
+        "//lib/Conversion/PolyToStandard",
         "//lib/Transform/Affine:Passes",
         "//lib/Transform/Arith:Passes",
         "//lib/Dialect/Poly:Poly",
