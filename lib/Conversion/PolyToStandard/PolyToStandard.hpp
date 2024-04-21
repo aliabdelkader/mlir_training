@@ -10,6 +10,7 @@ namespace training {
 namespace poly {
 
 #define GEN_PASS_DECL
+#define GEN_PASS_DECL_POLYTOSTANDARD
 #include "lib/Conversion/PolyToStandard/PolyToStandard.h.inc"
 
 #define GEN_PASS_REGISTRATION

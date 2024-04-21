@@ -12,11 +12,21 @@ cc_binary(
     includes = ["include"],
     deps = [
         "//lib/Conversion/PolyToStandard",
+        "//lib/Dialect/Poly",
         "//lib/Transform/Affine:Passes",
         "//lib/Transform/Arith:Passes",
-        "//lib/Dialect/Poly:Poly",
         "@llvm-project//mlir:AllPassesAndDialects",
+        "@llvm-project//mlir:ArithToLLVM",
+        "@llvm-project//mlir:BufferizationPipelines",
+        "@llvm-project//mlir:BufferizationTransforms",
+        "@llvm-project//mlir:ControlFlowToLLVM",
+        "@llvm-project//mlir:FuncToLLVM",
+        "@llvm-project//mlir:LinalgTransforms",
+        "@llvm-project//mlir:MemRefToLLVM",
+        "@llvm-project//mlir:MemRefTransforms",
         "@llvm-project//mlir:MlirOptLib",
-        "@llvm-project//mlir:Pass"
+        "@llvm-project//mlir:Pass",
+        "@llvm-project//mlir:SCFToControlFlow",
+        "@llvm-project//mlir:TensorToLinalg",
     ],
 )

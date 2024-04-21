@@ -18,6 +18,7 @@ runfiles_dir = Path(os.environ["RUNFILES_DIR"])
 tool_relpaths = [
     "llvm-project/mlir",
     "llvm-project/llvm",
+    "llvm-project/clang",
     "mlir_training/tools",
 ]
 
@@ -28,3 +29,9 @@ config.environment["PATH"] = (
     + ":"
     + os.environ["PATH"]
 )
+
+
+substitutions = {
+    "%project_source_dir": runfiles_dir.joinpath(Path('mlir_training')),
+}
+config.substitutions.extend(substitutions.items())

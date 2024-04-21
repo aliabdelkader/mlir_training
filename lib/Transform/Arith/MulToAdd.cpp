@@ -47,7 +47,7 @@ struct PowerOfTwoExpand : public OpRewritePattern<MulIOp> {
         MulIOp newMul = rewriter.create<MulIOp>(op.getLoc(), lhs, newConstant);
         AddIOp newAdd = rewriter.create<AddIOp>(op.getLoc(), newMul, newMul);
 
-        rewriter.replaceOp(op, {newAdd});
+        rewriter.replaceOp(op, newAdd);
         rewriter.eraseOp(rhsDefiningOp);
         return success();
     }
@@ -75,7 +75,7 @@ struct PeelFromMul : public OpRewritePattern<MulIOp> {
             );
             auto evenMulti = rewriter.create<arith::MulIOp>(op.getLoc(), lhs, newConstant);
             auto newAdd = rewriter.create<arith::AddIOp>(evenMulti->getLoc(), evenMulti, lhs);
-            rewriter.replaceOp(op, {newAdd});
+            rewriter.replaceOp(op, newAdd);
             rewriter.eraseOp(rhsDefiningOp);
         }
 
